@@ -1,17 +1,20 @@
+# coding: utf-8
 
-# In[69]:
+# In[75]:
 
 
 import os
 
 
-# In[70]:
+# In[76]:
 
 
 from pyspark.conf import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import concat, col
+from mlrun import get_or_create_ctx
 
+mlrun_ctx=get_or_create_ctx('sparkjob')
 # Initiate a new Spark Session
 spark = SparkSession.builder.appName("Spark Session with Default Configurations").getOrCreate()
 
@@ -21,7 +24,7 @@ spark = SparkSession.builder.appName("Spark Session with Default Configurations"
 conf = spark.sparkContext._conf
 
 
-# In[71]:
+# In[77]:
 
 
 # Relative path to the NoSQL table within the parent platform data container
@@ -52,5 +55,18 @@ df2.write    .mode("overwrite")    .parquet(parqFile)
 # In[ ]:
 
 
+mlrun_ctx.log_dataset('bankxact',df=df2,format=csv)
+
+
+# In[ ]:
+
 
 spark.stop()
+
+
+# In[ ]:
+
+
+#jupyter nbconvert --to nuclio.export.NuclioExporter 
+#'--output', yaml_path,
+
